@@ -59,6 +59,21 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\images\ArcticTrooper.png" />
+    <Content Include="assets\images\button.gif" />
+    <Content Include="assets\images\buttonBetMax.gif" />
+    <Content Include="assets\images\buttonBetOne.gif" />
+    <Content Include="assets\images\buttonPower.gif" />
+    <Content Include="assets\images\buttonReset.gif" />
+    <Content Include="assets\images\CactusGarden.png" />
+    <Content Include="assets\images\coconut.jpg" />
+    <Content Include="assets\images\crazyHotPaper.png" />
+    <Content Include="assets\images\fatZombie.jpg" />
+    <Content Include="assets\images\Gardentuar.png" />
+    <Content Include="assets\images\potatoMine.png" />
+    <Content Include="assets\images\slotMachine.jpg" />
+    <Content Include="assets\images\twinCherry.png" />
+    <Content Include="assets\images\twinSunflower.png" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -69,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\audio\clicked.wav" />
-    <Content Include="assets\images\pinkButton.png" />
     <Content Include="css\main.css" />
     <Content Include="index.html" />
     <Content Include="Scripts\lib\easeljs-0.8.0.min.js" />
