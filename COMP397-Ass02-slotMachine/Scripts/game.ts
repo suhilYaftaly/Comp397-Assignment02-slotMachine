@@ -3,6 +3,9 @@
 /// <reference path="typings/tweenjs/tweenjs.d.ts" />
 /// <reference path="typings/soundjs/soundjs.d.ts" />
 /// <reference path="typings/preloadjs/preloadjs.d.ts" />
+/// <reference path="../config/constants.ts" />
+/// <reference path="../objects/label.ts" />
+/// <reference path="../objects/button.ts" />
 
 
 // Game Framework Variables
@@ -11,14 +14,36 @@ var stage: createjs.Stage;
 var stats: Stats;
 
 var assets: createjs.LoadQueue;
+
+//background image location
 var manifest = [
     { id: "background", src: "assets/images/slotMachine.jpg" },
+    { id: "buttonSpin", src: "assets/images/buttonSpin.gif" },
     { id: "clicked", src: "assets/audio/clicked.wav" }
 ];
+
+// buttons and sumbols image locations
+var atlas = [
+    { id: "buttonBetMax", src: "assets/images/buttonBetMax.gif" },
+    { id: "buttonBetOne", src: "assets/images/buttonBetOne.gif" },
+    { id: "buttonReset", src: "assets/images/buttonReset.gif" },
+    //{ id: "buttonSpin", src: "assets/images/buttonSpin.gif" },
+    { id: "arcticTrooper", src: "assets/images/ArcticTrooper.png" },
+    { id: "cactusGarden", src: "assets/images/CactusGarden.png" },
+    { id: "coconut", src: "assets/images/coconut.png" },
+    { id: "crazyHotPaper", src: "assets/images/crazyHotPaper.png" },
+    { id: "fatZombie", src: "assets/images/fatZombie.jpg" },
+    { id: "potatoMine", src: "assets/images/potatoMine.png" },
+    { id: "twinCherry", src: "assets/images/twinCherry.png" },
+    { id: "twinSunflower", src: "assets/images/twinSunflower.png" }
+]
 
 
 // Game Variables
 var background: createjs.Bitmap;
+var textureAtlas: createjs.SpriteSheet;
+//buttons
+var buttonSpin: createjs.Bitmap;
 
 
 // Preloader Function
@@ -28,6 +53,10 @@ function preload() {
     // event listener triggers when assets are completely loaded
     assets.on("complete", init, this); 
     assets.loadManifest(manifest);
+
+    //Load texture atlas
+    textureAtlas = new createjs.SpriteSheet(atlas);
+
     //Setup statistics object
     setupStats();
 }
@@ -68,11 +97,15 @@ function gameLoop() {
 }
 
 // Callback function that allows me to respond to button click events
-function pinkButtonClicked(event: createjs.MouseEvent) {
+function buttonSpinClicked(event: createjs.MouseEvent) {
     createjs.Sound.play("clicked");
+
+    //spinResult = Reels();
+    //fruits = spinResult[0] + " - " + spinResult[1] + " - " + spinResult[2];
+
+    //console.log(fruits);
 }
 
-// Callback functions that change the alpha transparency of the button
 
 
 
@@ -81,4 +114,13 @@ function main() {
    // add in slot machine graphics
     background = new createjs.Bitmap(assets.getResult("background"));
     stage.addChild(background); 
+
+    //add buttonSpin sprite
+    buttonSpin = new createjs.Bitmap(assets.getResult("buttonSpin"));
+    buttonSpin.regX = buttonSpin.getBounds().width * 0.5;
+    buttonSpin.regY = buttonSpin.getBounds().height * 0.5;
+    buttonSpin.x = 360;
+    buttonSpin.y = 90;
+    stage.addChild(buttonSpin);
+    buttonSpin.on("click", buttonSpinClicked, this);
 }
