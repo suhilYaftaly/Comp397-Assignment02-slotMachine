@@ -17,6 +17,12 @@ var objects;
             this.x = x;
             this.y = y;
         }
+        // PUBLIC METHODS
+        // to center label when text changed
+        Label.prototype.center = function () {
+            this.regX = this.getMeasuredWidth() * 0.5;
+            this.regY = this.getMeasuredHeight() * 0.5;
+        };
         return Label;
     })(createjs.Text);
     objects.Label = Label;

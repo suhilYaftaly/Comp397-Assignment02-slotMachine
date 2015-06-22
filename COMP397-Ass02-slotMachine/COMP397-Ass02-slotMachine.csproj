@@ -63,12 +63,13 @@
     <Content Include="assets\images\button.gif" />
     <Content Include="assets\images\buttonBetMax.gif" />
     <Content Include="assets\images\buttonBetOne.gif" />
+    <Content Include="assets\images\buttonPower.gif" />
     <Content Include="assets\images\buttonSpin.gif" />
     <Content Include="assets\images\buttonReset.gif" />
     <Content Include="assets\images\CactusGarden.png" />
-    <Content Include="assets\images\coconut.jpg" />
+    <Content Include="assets\images\coconut.gif" />
     <Content Include="assets\images\crazyHotPaper.png" />
-    <Content Include="assets\images\fatZombie.jpg" />
+    <Content Include="assets\images\fatZombie.gif" />
     <Content Include="assets\images\Gardentuar.png" />
     <Content Include="assets\images\potatoMine.png" />
     <Content Include="assets\images\slotMachine.jpg" />
@@ -109,6 +110,7 @@
     <TypeScriptCompile Include="config\constants.ts" />
     <TypeScriptCompile Include="objects\button.ts" />
     <TypeScriptCompile Include="objects\label.ts" />
+    <TypeScriptCompile Include="objects\Reel.ts" />
     <TypeScriptCompile Include="Scripts\game.ts" />
     <TypeScriptCompile Include="Scripts\typings\createjs-lib\createjs-lib.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\easeljs\easeljs.d.ts" />

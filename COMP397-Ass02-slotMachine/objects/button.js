@@ -12,7 +12,7 @@ var objects;
         __extends(Button, _super);
         // CONSTRUCTOR +++++++++++++++++++++++++++
         function Button(imageString, x, y, centered) {
-            _super.call(this, textureAtlas, imageString);
+            _super.call(this, imageString);
             if (centered) {
                 this.regX = this.getBounds().width * 0.5;
                 this.regY = this.getBounds().height * 0.5;
@@ -31,7 +31,7 @@ var objects;
             this.alpha = 1.0; // 100% opacity
         };
         return Button;
-    })(createjs.Sprite);
+    })(createjs.Bitmap);
     objects.Button = Button;
 })(objects || (objects = {}));
 //# sourceMappingURL=button.js.map

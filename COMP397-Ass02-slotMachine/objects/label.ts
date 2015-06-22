@@ -11,5 +11,11 @@
             this.x = x;
             this.y = y;
         }
+        // PUBLIC METHODS
+        // to center label when text changed
+        public center(): void {
+            this.regX = this.getMeasuredWidth() * 0.5;
+            this.regY = this.getMeasuredHeight() * 0.5;
+        }
     }
 } 

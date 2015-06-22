@@ -3,10 +3,10 @@
 
 module objects {
     // BUTTON CLASS +++++++++++++++++++++++++++++
-    export class Button extends createjs.Sprite {
+    export class Button extends createjs.Bitmap {
         // CONSTRUCTOR +++++++++++++++++++++++++++
         constructor(imageString: string, x: number, y: number, centered: boolean) {
-            super(textureAtlas, imageString);
+            super(imageString);
 
             if (centered) {
                 this.regX = this.getBounds().width * 0.5;
