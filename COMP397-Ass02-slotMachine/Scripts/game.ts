@@ -212,7 +212,7 @@ function buttonSpinClicked(event: createjs.MouseEvent) {
     createjs.Sound.play("clicked");
     // excecute code if power is on
     if (isPowerOn) {
-        //check if user does not add bet 
+        //check if user did not add a bet 
         if (bet <= 0) {
             lblStatus.text = "Invalid bet amount";
             lblStatus.center();
@@ -266,7 +266,6 @@ function buttonSpinClicked(event: createjs.MouseEvent) {
         }
     }
 }
-
 
 
 function btnBetTen_Click(event: createjs.MouseEvent) {
@@ -334,16 +333,14 @@ function btnPower_Click(event: createjs.MouseEvent) {
         lblStatus.center();
 
         //adding information label
-        //lblCredit = new objects.Label(credit.toString(), 20, 347);
-        //lblBet = new objects.Label(bet.toString(), 90, 347);
-        //lblLoose = new objects.Label(loose.toString(), 226, 347);
-        //lblWins = new objects.Label(wins.toString(), 158, 347);
+        lblCredit = new objects.Label(credit.toString(), 20, 347);
+        lblBet = new objects.Label(bet.toString(), 90, 347);
+        lblLoose = new objects.Label(loose.toString(), 226, 347);
+        lblWins = new objects.Label(wins.toString(), 158, 347);
 
         stage.addChild(lblCredit, lblBet, lblLoose, lblWins);
 
         isPowerOn = true;
-
-
     }
 }
 
@@ -352,24 +349,20 @@ function btnPower_Click(event: createjs.MouseEvent) {
 function main() {
    // add in slot machine graphics
     background = new createjs.Bitmap(assets.getResult("background"));
-    stage.addChild(background); 
 
-
+    //creating a link to the buttons and setting their positions
     buttonPower = new createjs.Bitmap(assets.getResult("buttonPower"));
     buttonPower.regX = buttonPower.getBounds().width * 0.5;
     buttonPower.regY = buttonPower.getBounds().height * 0.5;
     buttonPower.x = 383;
     buttonPower.y = 115;
-    stage.addChild(buttonPower);
     buttonPower.on("click", btnPower_Click, this);
 
-    //add buttonSpin sprite
     buttonSpin = new createjs.Bitmap(assets.getResult("buttonSpin"));
     buttonSpin.regX = buttonSpin.getBounds().width * 0.5;
     buttonSpin.regY = buttonSpin.getBounds().height * 0.5;
     buttonSpin.x = 233;
     buttonSpin.y = 250;
-    stage.addChild(buttonSpin);
     buttonSpin.on("click", buttonSpinClicked, this);
 
     buttonBetMax = new createjs.Bitmap(assets.getResult("buttonBetMax"));
@@ -377,26 +370,36 @@ function main() {
     buttonBetMax.regY = buttonBetMax.getBounds().height * 0.5;
     buttonBetMax.x = 383;
     buttonBetMax.y = 250;
-    stage.addChild(buttonBetMax);
     buttonBetMax.on("click", btnBetMax_Click, this);
-
 
     buttonBetOne = new createjs.Bitmap(assets.getResult("buttonBetOne"));
     buttonBetOne.regX = buttonBetOne.getBounds().width * 0.5;
     buttonBetOne.regY = buttonBetOne.getBounds().height * 0.5;
     buttonBetOne.x = 333;
     buttonBetOne.y = 250;
-    stage.addChild(buttonBetOne);
     buttonBetOne.on("click", btnBetTen_Click, this);
-
 
     buttonReset = new createjs.Bitmap(assets.getResult("buttonReset"));
     buttonReset.regX = buttonReset.getBounds().width * 0.5;
     buttonReset.regY = buttonReset.getBounds().height * 0.5;
     buttonReset.x = 283;
     buttonReset.y = 250;
-    stage.addChild(buttonReset);
     buttonReset.on("click", reset_Click, this);
 
+    //adding buttons and background to the screen
+    stage.addChild(background, buttonReset, buttonBetMax, buttonBetOne, buttonPower, buttonSpin);
 
+    // adding jackport label
+    lblJackPort = new objects.Label("Jackport: " + jackport.toString(), (stage.getBounds().width / 2), 92, true);
+    stage.addChild(lblJackPort);
+
+    //adding status label
+    lblStatus = new objects.Label("Turn on to play", (stage.getBounds().width / 2), 115, true);
+    stage.addChild(lblStatus);
+
+    //adding different symbols to the screen
+    var randomImages = Reels();
+    stage.addChild(imgReelOne = new objects.Reel(assets.getResult(randomImages[0]), 60, 188));
+    stage.addChild(imgReelTwo = new objects.Reel(assets.getResult(randomImages[1]), 144, 188));
+    stage.addChild(imgReelThree = new objects.Reel(assets.getResult(randomImages[2]), 224, 188));
 }
