@@ -1,7 +1,7 @@
 ﻿module config {
     // FONT CONSTANTS
     export var FONT_LABEL: string = "12px";
-    export var FONT_SMALL: string = "20px";
+    export var FONT_SMALL: string = "15px";
     export var FONT_MEDIUM: string = "40px";
     export var FONT_LARGE: string = "60px";
     export var FONT_FAMILY: string = "Consolas";

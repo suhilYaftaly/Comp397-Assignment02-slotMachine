@@ -2,7 +2,7 @@ var config;
 (function (config) {
     // FONT CONSTANTS
     config.FONT_LABEL = "12px";
-    config.FONT_SMALL = "20px";
+    config.FONT_SMALL = "15px";
     config.FONT_MEDIUM = "40px";
     config.FONT_LARGE = "60px";
     config.FONT_FAMILY = "Consolas";

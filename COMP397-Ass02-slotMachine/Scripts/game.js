@@ -4,7 +4,7 @@
 /// <reference path="typings/soundjs/soundjs.d.ts" />
 /// <reference path="typings/preloadjs/preloadjs.d.ts" />
 /// <reference path="../config/constants.ts" />
-/// <reference path="../objects/label.ts" />
+/// <reference path="../objects/Label.ts" />
 /// <reference path="../objects/button.ts" />
 /// <reference path="../objects/reel.ts" />
 // Game Framework Variables
@@ -20,6 +20,7 @@ var manifest = [
     { id: "buttonBetOne", src: "assets/images/buttonBetOne.gif" },
     { id: "buttonReset", src: "assets/images/buttonReset.gif" },
     { id: "buttonSpin", src: "assets/images/buttonSpin.gif" },
+    { id: "buttonQuit", src: "assets/images/buttonQuit.gif" },
     { id: "arcticTrooper", src: "assets/images/ArcticTrooper.png" },
     { id: "cactusGarden", src: "assets/images/CactusGarden.png" },
     { id: "coconut", src: "assets/images/coconut.gif" },
@@ -28,7 +29,11 @@ var manifest = [
     { id: "potatoMine", src: "assets/images/potatoMine.png" },
     { id: "twinCherry", src: "assets/images/twinCherry.png" },
     { id: "twinSunflower", src: "assets/images/twinSunflower.png" },
-    { id: "clicked", src: "assets/audio/clicked.wav" }
+    { id: "clicked", src: "assets/audio/clicked.wav" },
+    { id: "bet", src: "assets/audio/bet.wav" },
+    { id: "potatoMineSound", src: "assets/audio/potatoMine.wav" },
+    { id: "powerOn", src: "assets/audio/powerOn.wav" },
+    { id: "spin", src: "assets/audio/spin.wav" }
 ];
 // Game Variables
 var background;
@@ -39,11 +44,10 @@ var buttonSpin;
 var buttonBetMax;
 var buttonBetOne;
 var buttonReset;
+var buttonQuit;
 //labels
 var lblCredit;
 var lblBet;
-var lblWins;
-var lblLoose;
 var lblStatus;
 var lblJackPort;
 //reel varibale
@@ -112,8 +116,6 @@ function gameLoop() {
 function updateScores() {
     lblCredit.text = credit.toString();
     lblBet.text = bet.toString();
-    lblLoose.text = loose.toString();
-    lblWins.text = wins.toString();
 }
 /* Utility function to check if a value falls within a range of bounds */
 function checkRange(value, lowerBounds, upperBounds) {
@@ -173,12 +175,12 @@ function isEnoughCredit(betAmount) {
 // Callback function that allows me to respond to button click events
 function buttonSpinClicked(event) {
     //play a sound when the button is clicked
-    createjs.Sound.play("clicked");
+    createjs.Sound.play("spin");
     // excecute code if power is on
     if (isPowerOn) {
-        //check if user does not add bet 
+        //check if user did not add a bet 
         if (bet <= 0) {
-            lblStatus.text = "Invalid bet amount";
+            lblStatus.text = "Set amount";
             lblStatus.center();
         }
         else {
@@ -187,15 +189,15 @@ function buttonSpinClicked(event) {
             // display spinResult
             spinResult = Reels();
             console.log(spinResult[0] + " " + spinResult[1] + " " + spinResult[2]);
-            imgReelOne = new objects.Reel(assets.getResult(spinResult[0]), 60, 188);
-            imgReelTwo = new objects.Reel(assets.getResult(spinResult[1]), 142, 188);
-            imgReelThree = new objects.Reel(assets.getResult(spinResult[2]), 224, 188);
+            imgReelOne = new objects.Reel(assets.getResult(spinResult[0]), 143, 140);
+            imgReelTwo = new objects.Reel(assets.getResult(spinResult[1]), 208, 140);
+            imgReelThree = new objects.Reel(assets.getResult(spinResult[2]), 289, 140);
             ;
             stage.addChild(imgReelOne, imgReelTwo, imgReelThree);
-            // if spin result contain any zombie user loose
+            // if spin result spins potato mine then the player looses
             if (spinResult[0] == "potatoMine" || spinResult[1] == "potatoMine" || spinResult[2] == "potatoMine") {
+                createjs.Sound.play("potatoMineSound");
                 credit = credit - bet;
-                loose++;
                 bet = 0;
                 updateScores();
                 lblStatus.text = "You loose";
@@ -208,7 +210,6 @@ function buttonSpinClicked(event) {
                     jackport = 1000;
                     lblJackPort.text = "Jackpot: " + jackport;
                     lblJackPort.center();
-                    wins++;
                     bet = 0;
                     updateScores();
                     lblStatus.text = "***Jackpot***";
@@ -217,10 +218,9 @@ function buttonSpinClicked(event) {
                 else {
                     //otherwise handle simple win
                     credit += bet;
-                    wins++;
                     bet = 0;
                     updateScores();
-                    lblStatus.text = "You wins";
+                    lblStatus.text = "You win";
                     lblStatus.center();
                 }
             }
@@ -229,7 +229,7 @@ function buttonSpinClicked(event) {
 }
 function btnBetTen_Click(event) {
     //play a sound when the button is clicked
-    createjs.Sound.play("clicked");
+    createjs.Sound.play("bet");
     if (isPowerOn) {
         if (isEnoughCredit(10)) {
             bet = 10;
@@ -237,15 +237,15 @@ function btnBetTen_Click(event) {
             lblBet.text = bet.toString();
         }
         else {
-            // if credit is not enoug show message
-            lblStatus.text = "Not enough credit";
+            // if credit is not enough show message
+            lblStatus.text = "Check credit";
             lblStatus.center();
         }
     }
 }
 function btnBetMax_Click(event) {
     //play a sound when the button is clicked
-    createjs.Sound.play("clicked");
+    createjs.Sound.play("bet");
     if (isPowerOn) {
         bet = credit;
         lblCredit.text = (credit - bet).toString();
@@ -259,9 +259,6 @@ function reset_Click(event) {
         if (confirm("Reset Game ?")) {
             credit = 1000;
             bet = 0;
-            wins = 0;
-            loose = 0;
-            turn = 0;
             updateScores();
             lblStatus.text = "Ready";
             lblStatus.center();
@@ -270,7 +267,7 @@ function reset_Click(event) {
 }
 function btnPower_Click(event) {
     //play a sound when the button is clicked
-    createjs.Sound.play("clicked");
+    createjs.Sound.play("powerOn");
     if (isPowerOn) {
         // if power on then 
         if (confirm("Turn off the game ?")) {
@@ -278,7 +275,7 @@ function btnPower_Click(event) {
             lblStatus.text = "Turn on to play";
             lblStatus.center();
             //removing information label
-            stage.removeChild(lblCredit, lblBet, lblLoose, lblWins);
+            stage.removeChild(lblCredit, lblBet);
             isPowerOn = false;
         }
     }
@@ -288,54 +285,72 @@ function btnPower_Click(event) {
         lblStatus.text = "Ready";
         lblStatus.center();
         //adding information label
-        //lblCredit = new objects.Label(credit.toString(), 20, 347);
-        //lblBet = new objects.Label(bet.toString(), 90, 347);
-        //lblLoose = new objects.Label(loose.toString(), 226, 347);
-        //lblWins = new objects.Label(wins.toString(), 158, 347);
-        stage.addChild(lblCredit, lblBet, lblLoose, lblWins);
+        lblCredit = new objects.Label(credit.toString(), 425, 138, false);
+        lblBet = new objects.Label(bet.toString(), 425, 179, false);
+        stage.addChild(lblCredit, lblBet);
         isPowerOn = true;
     }
 }
-// Our Main Game Function
+function btnQuit_Click() {
+    //play a sound when the button is clicked
+    createjs.Sound.play("clicked");
+    if (confirm("Quit the game ?")) {
+        window.top.close();
+    }
+}
+// Main Game Function
 function main() {
-    // add in slot machine graphics
     background = new createjs.Bitmap(assets.getResult("background"));
-    stage.addChild(background);
+    //creating a link to the buttons and setting their positions
     buttonPower = new createjs.Bitmap(assets.getResult("buttonPower"));
     buttonPower.regX = buttonPower.getBounds().width * 0.5;
     buttonPower.regY = buttonPower.getBounds().height * 0.5;
     buttonPower.x = 383;
     buttonPower.y = 115;
-    stage.addChild(buttonPower);
     buttonPower.on("click", btnPower_Click, this);
-    //add buttonSpin sprite
     buttonSpin = new createjs.Bitmap(assets.getResult("buttonSpin"));
     buttonSpin.regX = buttonSpin.getBounds().width * 0.5;
     buttonSpin.regY = buttonSpin.getBounds().height * 0.5;
     buttonSpin.x = 233;
-    buttonSpin.y = 250;
-    stage.addChild(buttonSpin);
+    buttonSpin.y = 260;
     buttonSpin.on("click", buttonSpinClicked, this);
     buttonBetMax = new createjs.Bitmap(assets.getResult("buttonBetMax"));
     buttonBetMax.regX = buttonBetMax.getBounds().width * 0.5;
     buttonBetMax.regY = buttonBetMax.getBounds().height * 0.5;
     buttonBetMax.x = 383;
-    buttonBetMax.y = 250;
-    stage.addChild(buttonBetMax);
+    buttonBetMax.y = 260;
     buttonBetMax.on("click", btnBetMax_Click, this);
     buttonBetOne = new createjs.Bitmap(assets.getResult("buttonBetOne"));
     buttonBetOne.regX = buttonBetOne.getBounds().width * 0.5;
     buttonBetOne.regY = buttonBetOne.getBounds().height * 0.5;
     buttonBetOne.x = 333;
-    buttonBetOne.y = 250;
-    stage.addChild(buttonBetOne);
+    buttonBetOne.y = 260;
     buttonBetOne.on("click", btnBetTen_Click, this);
     buttonReset = new createjs.Bitmap(assets.getResult("buttonReset"));
     buttonReset.regX = buttonReset.getBounds().width * 0.5;
     buttonReset.regY = buttonReset.getBounds().height * 0.5;
     buttonReset.x = 283;
-    buttonReset.y = 250;
-    stage.addChild(buttonReset);
+    buttonReset.y = 260;
     buttonReset.on("click", reset_Click, this);
+    buttonQuit = new createjs.Bitmap(assets.getResult("buttonQuit"));
+    buttonQuit.regX = buttonQuit.getBounds().width * 0.5;
+    buttonQuit.regY = buttonQuit.getBounds().height * 0.5;
+    buttonQuit.x = 50;
+    buttonQuit.y = 50;
+    buttonQuit.on("click", btnQuit_Click, this);
+    //adding buttons and background to the screen
+    stage.addChild(background, buttonReset, buttonBetMax, buttonBetOne, buttonPower, buttonSpin, buttonQuit);
+    // adding jackport label
+    lblJackPort = new objects.Label(jackport.toString(), 450, 102, true);
+    stage.addChild(lblJackPort);
+    //adding status label
+    lblStatus = new objects.Label("Turn on to play", 427, 215, true);
+    stage.addChild(lblStatus);
+    //adding different symbols to the screen
+    var randomImages = Reels();
+    imgReelOne = new objects.Reel(assets.getResult(randomImages[0]), 143, 140);
+    imgReelTwo = new objects.Reel(assets.getResult(randomImages[1]), 208, 140);
+    imgReelThree = new objects.Reel(assets.getResult(randomImages[2]), 289, 140);
+    stage.addChild(imgReelOne, imgReelTwo, imgReelThree);
 }
 //# sourceMappingURL=game.js.map
