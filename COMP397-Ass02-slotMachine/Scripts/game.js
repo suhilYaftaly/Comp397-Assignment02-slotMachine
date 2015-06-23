@@ -12,15 +12,18 @@ var canvas = document.getElementById("canvas");
 var stage;
 var stats;
 var assets;
-//background image location
+//image locations
 var manifest = [
+    //background locations
     { id: "background", src: "assets/images/slotMachine.jpg" },
+    //button locations
     { id: "buttonPower", src: "assets/images/buttonPower.gif" },
     { id: "buttonBetMax", src: "assets/images/buttonBetMax.gif" },
     { id: "buttonBetOne", src: "assets/images/buttonBetOne.gif" },
     { id: "buttonReset", src: "assets/images/buttonReset.gif" },
     { id: "buttonSpin", src: "assets/images/buttonSpin.gif" },
     { id: "buttonQuit", src: "assets/images/buttonQuit.gif" },
+    //Symbols locations
     { id: "arcticTrooper", src: "assets/images/ArcticTrooper.png" },
     { id: "cactusGarden", src: "assets/images/CactusGarden.png" },
     { id: "coconut", src: "assets/images/coconut.gif" },
@@ -29,6 +32,7 @@ var manifest = [
     { id: "potatoMine", src: "assets/images/potatoMine.png" },
     { id: "twinCherry", src: "assets/images/twinCherry.png" },
     { id: "twinSunflower", src: "assets/images/twinSunflower.png" },
+    //audio location
     { id: "clicked", src: "assets/audio/clicked.wav" },
     { id: "bet", src: "assets/audio/bet.wav" },
     { id: "potatoMineSound", src: "assets/audio/potatoMine.wav" },
@@ -37,7 +41,6 @@ var manifest = [
 ];
 // Game Variables
 var background;
-var textureAtlas;
 //buttons
 var buttonPower;
 var buttonSpin;
@@ -49,20 +52,17 @@ var buttonQuit;
 var lblCredit;
 var lblBet;
 var lblStatus;
-var lblJackPort;
-//reel varibale
-var imgReelOne;
-var imgReelTwo;
-var imgReelThree;
+var lblJackPot;
+//random symbol generators variable
+var randImgOne;
+var randImgTwo;
+var randImgThree;
 //power variable
 var isPowerOn = false;
 // Score variable
 var credit = 1000;
 var bet = 0;
-var wins = 0;
-var loose = 0;
-var turn = 0;
-var jackport = 5000;
+var jackpot = 5000;
 // Symbol varibales
 var potatoMine = 0;
 var arcticTrooper = 0;
@@ -72,6 +72,7 @@ var crazyHotPaper = 0;
 var fatZombie = 0;
 var twinCherry = 0;
 var twinSunflower = 0;
+//more variables
 var spinResult;
 var symbols = "";
 // Preloader Function
@@ -81,8 +82,6 @@ function preload() {
     // event listener triggers when assets are completely loaded
     assets.on("complete", init, this);
     assets.loadManifest(manifest);
-    //Load texture atlas
-    //textureAtlas = new createjs.SpriteSheet(atlas);
     //Setup statistics object
     setupStats();
 }
@@ -102,7 +101,7 @@ function setupStats() {
     stats.setMode(0); // set to fps
     // align bottom-right
     stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '330px';
+    stats.domElement.style.left = '438px';
     stats.domElement.style.top = '10px';
     document.body.appendChild(stats.domElement);
 }
@@ -178,22 +177,22 @@ function buttonSpinClicked(event) {
     createjs.Sound.play("spin");
     // excecute code if power is on
     if (isPowerOn) {
-        //check if user did not add a bet 
+        //check if the user entered a bet 
         if (bet <= 0) {
             lblStatus.text = "Set amount";
             lblStatus.center();
         }
         else {
-            //remove previous spin Result if exists
-            stage.removeChild(imgReelOne, imgReelTwo, imgReelThree);
+            //remove previous spin Result
+            stage.removeChild(randImgOne, randImgTwo, randImgThree);
             // display spinResult
             spinResult = Reels();
             console.log(spinResult[0] + " " + spinResult[1] + " " + spinResult[2]);
-            imgReelOne = new objects.Reel(assets.getResult(spinResult[0]), 143, 140);
-            imgReelTwo = new objects.Reel(assets.getResult(spinResult[1]), 208, 140);
-            imgReelThree = new objects.Reel(assets.getResult(spinResult[2]), 289, 140);
+            randImgOne = new objects.Reel(assets.getResult(spinResult[0]), 136, 140);
+            randImgTwo = new objects.Reel(assets.getResult(spinResult[1]), 208, 140);
+            randImgThree = new objects.Reel(assets.getResult(spinResult[2]), 287, 140);
             ;
-            stage.addChild(imgReelOne, imgReelTwo, imgReelThree);
+            stage.addChild(randImgOne, randImgTwo, randImgThree);
             // if spin result spins potato mine then the player looses
             if (spinResult[0] == "potatoMine" || spinResult[1] == "potatoMine" || spinResult[2] == "potatoMine") {
                 createjs.Sound.play("potatoMineSound");
@@ -204,12 +203,12 @@ function buttonSpinClicked(event) {
                 lblStatus.center();
             }
             else {
-                //wins jackport if images on all three reels are equal
+                //wins jackpot if images on all three reels are equal
                 if (spinResult[0] == spinResult[1] && spinResult[0] == spinResult[2]) {
-                    credit += jackport;
-                    jackport = 1000;
-                    lblJackPort.text = "Jackpot: " + jackport;
-                    lblJackPort.center();
+                    credit += jackpot;
+                    jackpot = 1000;
+                    lblJackPot.text = "" + jackpot;
+                    lblJackPot.center();
                     bet = 0;
                     updateScores();
                     lblStatus.text = "***Jackpot***";
@@ -220,7 +219,7 @@ function buttonSpinClicked(event) {
                     credit += bet;
                     bet = 0;
                     updateScores();
-                    lblStatus.text = "You win";
+                    lblStatus.text = "You win+++";
                     lblStatus.center();
                 }
             }
@@ -238,7 +237,7 @@ function btnBetTen_Click(event) {
         }
         else {
             // if credit is not enough show message
-            lblStatus.text = "Check credit";
+            lblStatus.text = "Unsufficient Credit";
             lblStatus.center();
         }
     }
@@ -272,7 +271,7 @@ function btnPower_Click(event) {
         // if power on then 
         if (confirm("Turn off the game ?")) {
             buttonPower.image = assets.getResult("buttonPower");
-            lblStatus.text = "Turn on to play";
+            lblStatus.text = "Power on to play";
             lblStatus.center();
             //removing information label
             stage.removeChild(lblCredit, lblBet);
@@ -285,8 +284,8 @@ function btnPower_Click(event) {
         lblStatus.text = "Ready";
         lblStatus.center();
         //adding information label
-        lblCredit = new objects.Label(credit.toString(), 425, 138, false);
-        lblBet = new objects.Label(bet.toString(), 425, 179, false);
+        lblCredit = new objects.Label(credit.toString(), 535, 138, false);
+        lblBet = new objects.Label(bet.toString(), 535, 200, false);
         stage.addChild(lblCredit, lblBet);
         isPowerOn = true;
     }
@@ -305,31 +304,31 @@ function main() {
     buttonPower = new createjs.Bitmap(assets.getResult("buttonPower"));
     buttonPower.regX = buttonPower.getBounds().width * 0.5;
     buttonPower.regY = buttonPower.getBounds().height * 0.5;
-    buttonPower.x = 383;
-    buttonPower.y = 115;
+    buttonPower.x = 377;
+    buttonPower.y = 112;
     buttonPower.on("click", btnPower_Click, this);
     buttonSpin = new createjs.Bitmap(assets.getResult("buttonSpin"));
     buttonSpin.regX = buttonSpin.getBounds().width * 0.5;
     buttonSpin.regY = buttonSpin.getBounds().height * 0.5;
-    buttonSpin.x = 233;
+    buttonSpin.x = 227;
     buttonSpin.y = 260;
     buttonSpin.on("click", buttonSpinClicked, this);
     buttonBetMax = new createjs.Bitmap(assets.getResult("buttonBetMax"));
     buttonBetMax.regX = buttonBetMax.getBounds().width * 0.5;
     buttonBetMax.regY = buttonBetMax.getBounds().height * 0.5;
-    buttonBetMax.x = 383;
+    buttonBetMax.x = 377;
     buttonBetMax.y = 260;
     buttonBetMax.on("click", btnBetMax_Click, this);
     buttonBetOne = new createjs.Bitmap(assets.getResult("buttonBetOne"));
     buttonBetOne.regX = buttonBetOne.getBounds().width * 0.5;
     buttonBetOne.regY = buttonBetOne.getBounds().height * 0.5;
-    buttonBetOne.x = 333;
+    buttonBetOne.x = 327;
     buttonBetOne.y = 260;
     buttonBetOne.on("click", btnBetTen_Click, this);
     buttonReset = new createjs.Bitmap(assets.getResult("buttonReset"));
     buttonReset.regX = buttonReset.getBounds().width * 0.5;
     buttonReset.regY = buttonReset.getBounds().height * 0.5;
-    buttonReset.x = 283;
+    buttonReset.x = 277;
     buttonReset.y = 260;
     buttonReset.on("click", reset_Click, this);
     buttonQuit = new createjs.Bitmap(assets.getResult("buttonQuit"));
@@ -340,17 +339,17 @@ function main() {
     buttonQuit.on("click", btnQuit_Click, this);
     //adding buttons and background to the screen
     stage.addChild(background, buttonReset, buttonBetMax, buttonBetOne, buttonPower, buttonSpin, buttonQuit);
-    // adding jackport label
-    lblJackPort = new objects.Label(jackport.toString(), 450, 102, true);
-    stage.addChild(lblJackPort);
+    // adding jackpot label
+    lblJackPot = new objects.Label(jackpot.toString(), 550, 290, true);
+    stage.addChild(lblJackPot);
     //adding status label
-    lblStatus = new objects.Label("Turn on to play", 427, 215, true);
+    lblStatus = new objects.Label("Turn on to play", 600, 50, true);
     stage.addChild(lblStatus);
     //adding different symbols to the screen
     var randomImages = Reels();
-    imgReelOne = new objects.Reel(assets.getResult(randomImages[0]), 143, 140);
-    imgReelTwo = new objects.Reel(assets.getResult(randomImages[1]), 208, 140);
-    imgReelThree = new objects.Reel(assets.getResult(randomImages[2]), 289, 140);
-    stage.addChild(imgReelOne, imgReelTwo, imgReelThree);
+    randImgOne = new objects.Reel(assets.getResult(randomImages[0]), 136, 140);
+    randImgTwo = new objects.Reel(assets.getResult(randomImages[1]), 208, 140);
+    randImgThree = new objects.Reel(assets.getResult(randomImages[2]), 287, 140);
+    stage.addChild(randImgOne, randImgTwo, randImgThree);
 }
 //# sourceMappingURL=game.js.map
